@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rocket Game</title>
+    <style>
+        body {
+            width: 90vw;
+            /* maheight: 100vh; */
+            height: 80vh;
+            background-image: url(bg1.webp);
+            background-position: center;
+            /* background-attachment: fixed; */
+            background-size: cover;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            justify-content: center;
+        }
+
+        img {
+            position: absolute;
+            top: 83vh;
+            left: 45vw;
+        }
+
+        #score {
+            position: absolute;
+            top: 5vh;
+            right: 5vw;
+            font-size: 2rem;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            background-color: rgb(114, 231, 18);
+        }
+
+        #line {
+            position: absolute;
+            width: 98.7vw;
+            top: 95vh;
+            /* border: 5px solid white; */
+        }
+
+        #scoreBoard {
+            width: 500px;
+            height: 500px;
+            background-color: rgb(73, 71, 71);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            opacity: 0.4;
+            display: none;
+        }
+
+        #scoreBoard1 {
+            position: absolute;
+            top: 80px;
+            left: 510px;
+            display: none;
+        }
+
+        #scoreBoard1 h1 {
+            color: rgb(114, 231, 18);
+            opacity: 4;
+            font-size: 45px;
+            border-bottom: 1px solid rgb(114, 231, 18);
+        }
+
+        #scoreBoard1 p {
+            font-weight: bolder;
+            margin-left: 80px;
+            font-size: 86px;
+            color: aliceblue;
+        }
+
+        button {
+            padding: 15px 60px;
+            font-size: 30px;
+            left: -150px;
+            background-color: rgb(114, 231, 18);
+            outline: none;
+            border: none;
+            border-radius: 45px;
+            color: aliceblue;
+            font-weight: bolder;
+        }
+
+        #btn2 {
+            position: absolute;
+            top: 78vh;
+            left: 530px;
+            font-size: 40px;
+            padding: 15px 80px;
+        }
+
+        /* button {} */
+    </style>
+</head>
+
+<body>
+
+    <img src="jet.png" alt="" width="100px" id="myJet">
+    <div id="score">Score: 0</div>
+    <div id="line"></div>
+    <div id="scoreBoard">
+    </div>
+    <div id="scoreBoard1">
+        <h1>
+            Your Score
+        </h1>
+        <p id="displayScore">
+            0
+        </p>
+        <button id="btn1">Play Again</button>
+    </div>
+    <button id="btn2">Play Now</button>
+    <script>
+        let playGame = false;
+        let btn2 = document.getElementById('btn2');
+        console.log(btn2);
+        let btn1 = document.getElementById('btn1');
+
+        btn1.onclick = () => {
+            playGame = true;
+            // myGame();
+            location.reload()
+        }
+        btn2.onclick = () => {
+            playGame = true;
+            myGame();
+            console.log(playGame)
+        }
+        const line = document.getElementById("line");
+        const bgMusic = new Audio('bgmusic.mp3');
+        const fire = new Audio('firemusic.mp3');
+        const blast = new Audio('explosion.mp3');
+        // bgMusic.play();
+        setInterval(() => {
+            bgMusic.play();
+        }, 100)
+        const myJet = document.getElementById('myJet');
+        myJet.style.display = 'none'
+        function myGame() {
+            if (playGame) {
+                btn2.style.display = 'none';
+                document.body.style.backgroundImage = 'url("backGif.gif")';
+                myJet.style.display = 'block'
+                let myJetY = 83;
+                let myJetX = 50;
+                let myBulletY = myJetY * window.innerHeight / 100;
+                let myBulletX = myJetX * window.innerHeight / 100;
+                let myBulletY2 = myJetY * window.innerHeight / 100;
+                let myBulletX2 = myJetX * window.innerHeight / 100;
+                let myBullet1 = document.createElement('img');
+                let myBullet2 = document.createElement('img');
+                let myBullet3 = document.createElement('img');
+                let myBullet4 = document.createElement('img');
+                let flag = true;
+                const array = [myBullet1, myBullet2, myBullet3, myBullet4]
+                // let score = 0;
+                const bulletSpeed = 10;
+
+                const moveBullet = (myBullet1) => {
+
+                    myBulletY -= bulletSpeed;
+                    myBullet1.style.top = myBulletY + 'px';
+                    myBullet1.style.left = myBulletX - 4 + 'px';
+                    if (myBulletY > 0) {
+                        requestAnimationFrame(() => moveBullet(myBullet1));
+                    }
+                    else
+                        myBullet1.style.display = 'none'
+                }
+                const moveBullet2 = (myBullet2) => {
+
+                    myBulletY -= bulletSpeed;
+                    myBullet2.style.top = myBulletY + 'px';
+                    myBullet2.style.left = myBulletX2 + 'px';
+                    if (myBulletY > 0) {
+                        requestAnimationFrame(() => moveBullet2(myBullet2));
+                    }
+                    else
+                        myBullet2.style.display = 'none'
+                }
+                const moveBullet3 = (myBullet3) => {
+                    myBulletY -= bulletSpeed;
+                    myBullet3.style.top = myBulletY + 'px';
+                    myBulletX3 = myJetX * window.innerWidth / 100 + 60;
+                    myBullet3.style.left = myBulletX3 + 'px';
+                    if (myBulletY > 0) {
+                        requestAnimationFrame(() => moveBullet3(myBullet3));
+                    }
+                    else
+                        myBullet3.style.display = 'none'
+                }
+                const moveBullet4 = (myBullet4) => {
+                    myBulletY -= bulletSpeed;
+                    myBullet4.style.top = myBulletY + 'px';
+                    myBulletX4 = myJetX * window.innerWidth / 100 + 75;
+                    myBullet4.style.left = myBulletX4 + 'px';
+                    if (myBulletY > 0) {
+                        requestAnimationFrame(() => moveBullet4(myBullet4));
+                    }
+                    else
+                        myBullet4.style.display = 'none'
+                }
+                const moveJetUp = () => {
+                    myJetY -= 2;
+                    myJet.style.top = myJetY + 'vh';
+                }
+                const moveJetDown = () => {
+                    if (myJetY < 83)
+                        myJetY += 2;
+                    myJet.style.top = myJetY + 'vh';
+                }
+                const moveJetLeft = () => {
+                    myJetX -= 2;
+                    myJet.style.left = myJetX + 'vw';
+                }
+                const moveJetRight = () => {
+                    myJetX += 2;
+                    myJet.style.left = myJetX + 'vw';
+                }
+                const createBullet1 = () => {
+                    array.forEach((elem) => {
+                        elem.style.display = 'block';
+                    })
+                    fire.play();
+                    myBulletX2 = myJetX * window.innerWidth / 100 + 9;
+                    myBulletX3 = myJetX * window.innerWidth / 100 + 9;
+                    myBulletX4 = myJetX * window.innerWidth / 100 + 9;
+                    myBulletX = myJetX * window.innerWidth / 100;
+                    myBullet1.src = 'leserBullet.jpeg';
+                    myBullet1.style.width = 20 + 'px';
+                    myBullet2.src = 'leserBullet.jpeg';
+                    myBullet2.style.width = 20 + 'px';
+                    myBullet3.style.width = 20 + 'px';
+                    myBullet3.src = 'leserBullet.jpeg';
+                    myBullet4.style.width = 20 + 'px';
+                    myBullet4.src = 'leserBullet.jpeg';
+                    document.body.appendChild(myBullet1);
+                    document.body.appendChild(myBullet2);
+                    document.body.appendChild(myBullet3);
+                    document.body.appendChild(myBullet4);
+                    myBulletY = myJetY * window.innerHeight / 100;
+                    moveBullet(myBullet1);
+                    moveBullet2(myBullet2);
+                    moveBullet3(myBullet3);
+                    moveBullet4(myBullet4);
+                    setTimeout(() => {
+                        myBullet1.remove();
+                        myBullet2.remove();
+                        myBullet3.remove();
+                        myBullet4.remove();
+                    }, 2000)
+                };
+                // let game;
+                document.addEventListener('keydown', () => {
+                    if (event.code === 'Space') {
+                        if (flag)
+                            createBullet1()
+                    }
+                })
+
+                document.addEventListener('keyup', () => {
+                    if (event.code === 'Space') {
+                        // createBullet1()
+                    }
+                })
+                document.addEventListener('keydown', () => {
+                    if (event.keyCode === 38) {
+                        moveJetUp();
+                    }
+                    if (event.keyCode === 40) {
+                        moveJetDown();
+                    }
+                    if (event.keyCode === 37) {
+                        moveJetLeft();
+                    }
+                    if (event.keyCode === 39) {
+                        moveJetRight();
+                    }
+                })
+                const highClassEnemy = [];
+                const enemyArr = [];
+                for (let i = 0; i < 10; i++) {
+                    const enemy = document.createElement('img');
+                    const min = 10;
+                    const max = 1200;
+                    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                    enemy.src = 'enemy.png';
+                    enemy.style.left = randomNumber + 'px';
+                    enemy.style.top = '-190px';
+                    enemy.style.position = 'absolute';
+                    enemy.style.width = '90px';
+                    enemyArr.push(enemy);
+                    document.body.appendChild(enemy);
+                }
+                for (let i = 0; i < 5; i++) {
+                    const highenemy = document.createElement('img');
+                    const min = 10;
+                    const max = 1200;
+                    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                    highenemy.src = 'enemy2.avif';
+                    highenemy.style.left = randomNumber + 'px';
+                    highenemy.style.top = '-190px';
+                    highenemy.style.position = 'absolute';
+                    highenemy.style.width = '90px';
+                    highClassEnemy.push(highenemy);
+                    document.body.appendChild(highenemy);
+                }
+                let score = 0;
+                let goHighclassEnemy = true;
+                if (flag) {
+                    function moveEnemy(enemy) {
+                        let enemyY = parseInt(enemy.style.top) || 0;
+                        if (score > 10) {
+                            enemyY += 4;
+                        }
+                        else
+                            enemyY += 2;
+                        if (score > 1) {
+                            goHighclassEnemy = true;
+                        }
+                        enemy.style.top = enemyY + 'px';
+                        GameOver(enemy);
+                        negativeScore(enemy)
+                        scoreCalculator(enemy)
+                        // GameOverLine(enemy)
+                        // setTimeout(scoreCalculator(enemy), 20);
+                        if (enemyY < 688) {
+                            if (flag)
+                                requestAnimationFrame(() => moveEnemy(enemy))
+                            else {
+                                enemy.style.display = 'none';
+                                myJet.style.display = 'none';
+                            }
+                        }
+                        else {
+                            enemy.style.display = 'none';
+                            enemy.style.top = '-180px';
+                            enemy.style.left = Math.floor(Math.random() * 1200) + 'px';
+                            enemy.style.display = 'block';
+                            setTimeout(() => moveEnemy(enemy), Math.random() * 12000);
+                        }
+                    }
+                }
+
+                enemyArr.forEach((enemy) => {
+                    setTimeout(() => moveEnemy(enemy), Math.random() * 12000);
+                });
+
+                highClassEnemy.forEach((enemy) => {
+                    setInterval(() => {
+                        if (goHighclassEnemy) {
+                            moveEnemy(enemy);
+                        }
+                    }, Math.random() * 1200000);
+                });
+                const negativeScore = (elem1) => {
+                    const rect1 = line.getBoundingClientRect();
+                    const rect2 = elem1.getBoundingClientRect();
+                    if (rect1.right >= rect2.left &&
+                        rect1.left <= rect2.right &&
+                        rect1.bottom >= rect2.top &&
+                        rect1.top <= rect2.bottom && elem1.style.display == 'block') {
+                        elem1.style.display = 'none';
+
+                        let scoreBox = document.getElementById('score');
+                        scoreBox.innerHTML = "Score: " + score
+                        score -= 1;
+                    }
+                }
+                const GameOver = (elem1) => {
+                    const rect1 = myJet.getBoundingClientRect();
+                    const rect2 = elem1.getBoundingClientRect();
+                    if (rect1.right >= rect2.left &&
+                        rect1.left <= rect2.right &&
+                        rect1.bottom >= rect2.top &&
+                        rect1.top <= rect2.bottom && flag) {
+                        playGame = false;
+                        flag = false;
+                        document.body.style.backgroundImage = 'url("space.gif")';
+                        document.body.style.backgroundSize = 'cover'
+                        scoreBoard1.style.display = 'block'
+                        scoreBoard.style.display = 'block'
+                        line.style.display = 'none';
+                        displayScore.innerHTML = score
+                        blast.play();
+                        setTimeout(() => {
+                            blast.pause();
+                        }, 1000)
+                    }
+                }
+                let scoreCalculator = (enemy) => {
+                    const rect1 = enemy.getBoundingClientRect();
+                    array.forEach((elem) => {
+                        const rect2 = elem.getBoundingClientRect();
+                        if (rect1.right >= rect2.left &&
+                            rect1.left <= rect2.right &&
+                            rect1.bottom >= rect2.top &&
+                            rect1.top <= rect2.bottom && elem.style.display === 'block') {
+                            array.forEach((elem) => {
+                                elem.style.display = 'none';
+                            })
+                            enemy.src = 'blastG1.gif';
+                            setTimeout(() => {
+                                enemy.style.display = 'none';
+                                enemy.src = 'enemy.png';
+                            }, 200)
+                            score++;
+                            let scoreBox = document.getElementById('score');
+                            scoreBox.innerHTML = "Score: " + score
+                            // console.log("Score: " + score)
+                            blast.play();
+                        }
+                    })
+                }
+            }
+            if (playGame) {
+                clearInterval(interval)
+            }
+        }
+
+
+
+        // For Highest Score 
+        setInterval(() => {
+            localStorage.setItem('scores', JSON.stringify([9, 5, 12])); // Storing an array of scores
+            console.log(JSON.parse(localStorage.getItem('scores')));
+
+            const scores = JSON.parse(localStorage.getItem('scores'));
+            if (scores && Array.isArray(scores) && scores.some(score => score > 9)) {
+                localStorage.setItem('Message', 'Highscore');
+            }
+        }, 1000)
+    </script>
+</body>
+
+</html>

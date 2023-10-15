@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Increasing bullet speed in Vanilla JS</title>
+    <style>
+        body {
+            width: 90vw;
+            /* maheight: 100vh; */
+            height: 90vh;
+            background-image: url(backGif.gif);
+            background-position: center;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        img {
+            position: absolute;
+            top: 83vh;
+            left: 45vw;
+        }
+
+        #line {
+            position: absolute;
+            width: 98.7vw;
+            top: 95vh;
+            border: 5px solid black;
+        }
+
+        #line1 {
+            position: absolute;
+            width: 98.7vw;
+            top: 5vh;
+            border: 5px solid black;
+        }
+
+        #score {
+            position: absolute;
+            top: 5vh;
+            right: 5vw;
+            font-size: 2rem;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <img src="jet.png" alt="" width="100px" id="myJet">
+    <div id="line"></div>
+    <div id="line1"></div>
+    <div id="score">Score: 0</div>
+    <script>
+        const bgMusic = new Audio('bgmusic.mp3');
+        const fire = new Audio('firemusic.mp3');
+        const blast = new Audio('explosion.mp3');
+        // bgMusic.play();
+        setInterval(() => {
+            // bgMusic.play();
+        }, 100)
+        const myJet = document.getElementById('myJet');
+        let myJetY = 83;
+        let myJetX = 50;
+        let myBulletY = myJetY * window.innerHeight / 100;
+        let myBulletX = myJetX * window.innerHeight / 100;
+        let myBulletY2 = myJetY * window.innerHeight / 100;
+        let myBulletX2 = myJetX * window.innerHeight / 100;
+        let myBullet1 = document.createElement('img');
+        let myBullet2 = document.createElement('img');
+        let myBullet3 = document.createElement('img');
+        let myBullet4 = document.createElement('img');
+        const array = [myBullet1, myBullet2, myBullet3, myBullet4]
+        let score = 0;
+        const scoreElement = document.getElementById('score');
+        // console.log(myBulletX, myBulletY)
+        const bulletSpeed = 10;
+
+        const moveBullet = (myBullet1) => {
+            myBulletY -= bulletSpeed;
+            myBullet1.style.top = myBulletY + 'px';
+            myBullet1.style.left = myBulletX - 4 + 'px';
+            if (myBulletY > -90) {
+                requestAnimationFrame(() => moveBullet(myBullet1));
+            } else {
+                checkCollision(myBullet1);
+            }
+        }
+
+        const moveBullet2 = (myBullet2) => {
+            myBulletY -= bulletSpeed;
+            myBullet2.style.top = myBulletY + 'px';
+            myBullet2.style.left = myBulletX2 + 'px';
+            if (myBulletY > -90) {
+                requestAnimationFrame(() => moveBullet(myBullet2));
+            }
+        }
+        const detectBulletCollision = (bullet, enemy) => {
+            let rect1 = bullet.getBoundingClientRect();
+            let rect2 = enemy.getBoundingClientRect();
+
+            return !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom);
+        }
+
+        const checkBulletCollision = () => {
+            array.forEach((bullet) => {
+                if (detectBulletCollision(bullet, enemy)) {
+                    blast.play();
+                    // enemy.style.display = 'none';
+                    // bullet.style.display = 'none';
+                    // score += 1;
+                    // console.log(score);
+                    // document.getElementById('score').innerHTML = score;
+                }
+            })
+        }
+
+        const detectJetCollision = (jet, enemy) => {
+            let rect1 = jet.getBoundingClientRect();
+            let rect2 = enemy.getBoundingClientRect();
+
+            return !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom);
+        }
+
+        const checkJetCollision = () => {
+            if (detectJetCollision(myJet, enemy)) {
+                clearInterval(interval);
+                bgMusic.pause();
+                blast.play();
+                alert('Game Over');
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            // console.log(event);
+            if (event.code === 'ArrowUp') {
+                moveJetUp();
+            } else if (event.code === 'ArrowDown') {
+                moveJetDown();
+            } else if (event.code === 'ArrowLeft') {
+                moveJetLeft();
+            } else if (event.code === 'ArrowRight') {
+                moveJetRight();
+            } else if (event.code === 'Space') {
+                createBullet1();
+            }
+        })
+
+        const interval = setInterval(() => {
+            checkBulletCollision();
+            checkJetCollision();
+        }, 20)
+
+        const moveEnemy = () => {
+            let x = Math.floor(Math.random() * 80);
+            enemy.style.left = x + 'vw';
+            enemy.style.top = '-30px';
+            const dropEnemy = () => {
+                let enemyY = enemy.getBoundingClientRect().bottom;
+                enemyY += 5;
+                enemy.style.top = enemyY + 'px';
+                if (enemyY < window.innerHeight) {
+                    requestAnimationFrame(dropEnemy)
+                } else {
+                    enemy.remove();
+                }
+            }
+            requestAnimationFrame(dropEnemy)
+        }
+
+        setInterval(() => {
+            moveEnemy();
+        }, 1500)
+
+    </script>
